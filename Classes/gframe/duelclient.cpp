@@ -3103,14 +3103,22 @@ mainGame		->dField.sort_list.clear();
 		list<IGUIElement*> children = mainGame->wANAttribute->getChildren();
 		int count = children.size();
 		int i = 0;
+		int filter = 0x1;
 		list<IGUIElement*>::Iterator current = children.begin();
 		contents = (char **) malloc(count * sizeof(char *));
 		do {
 			if ((*current)->getType() == EGUIET_CHECK_BOX) {
 				content = (char *) malloc(256 * 4);
-				BufferIO::EncodeUTF8(((IGUICheckBox*) (*current))->getText(),
-						content);
+				if (filter & available) {
+					BufferIO::EncodeUTF8(((IGUICheckBox*) (*current))->getText(),
+							content);
+				}
+				else {
+					BufferIO::EncodeUTF8(dataManager.GetSysString(1080),
+							content);
+				}
 				*(contents + i++) = content;
+				filter <<= 1;
 			}
 			current++;
 		} while (current != children.end());
